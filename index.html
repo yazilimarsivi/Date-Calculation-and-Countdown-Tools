@@ -4,140 +4,249 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="author" content="webaraclar.tk">
-	<link  rel="stylesheet" href="css/bootstrap.min.css">
-	<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"> -->
-    <title>Date Calculation and Countdown Tools</title>
-	<style>
-		button, label{
-			margin: 5px;
-		}
-		p{
-			margin: 3px;
-		}
-	</style>
+    <meta name="author" content="https://github.com/yazilimarsivi/">
+    <title>Date Calculation & Countdown Tools</title>
+	<!-- <link  rel="stylesheet" href="css/bootstrap.min.css"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <style>
+        :root {
+            --primary-color: #f5deb3; /* Bisque benzeri bir renk */
+            --header-color: #d2b48c;  /* Burlywood */
+        }
+
+        body {
+            background-color: var(--primary-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        .main-header {
+            background-color: var(--header-color);
+            padding: 2rem 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .tool-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .result-area {
+            min-height: 60px;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(255,255,255,0.5);
+        }
+
+        .error-text {
+            color: #dc3545;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .time-highlight {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        progress {
+            width: 100%;
+            height: 20px;
+            margin-top: 10px;
+        }
+    </style>
 </head>
-<body style="background-color: bisque;">
-<h1 style="text-align:center; background-color:burlywood;">Date Calculation and Countdown Tools</h1>
-<div id="ana_govde" class="container-fluid">
-    <div class="row">
-        <div id="kac_gun" class="col  col-sm-3 border border-primary border-4 mx-1 my-1">
-			</center>
-				<h3>Time Left / After Calculator</h3>
-    	    	 <label>Year: <input type="number" class="kac_gun" name="Year" min="1970" max="2038" value="2023" required> </label>
-    	        <label>Month: <input type="number" class="kac_gun" name="Month" min="1" max="12" value="10" required> </label>
-	            <label>Day: <input type="number" class="kac_gun" name="Day" min="1" max="31" value="08" required> </label>
-            	<button onclick="kac_gun()">Calc.</button>
-        	    <p id="kac_gun_sonuc"></p>
-			</center>
-        </div>
-        <div id="gun_say" class="col  col-sm-4 border border-success border-4 mx-1 my-1">
-			<center>
-				<h3>Enter Number And Calculate The Date</h3>
-            	<label>Please Enter A Number For The Calculation (-/+ is accepted):</label>
-            	<input type="number" class="gun_say" name="days" value="1"  required>
-				<button onclick="gun_say()">Calc.</button>
-            	<p id="gun_say_sonuc"></p>
-			</center>
-        </div>
-        <div id="geri_say" class="col  col-sm-4 border border-warning border-4 mx-1 my-1">
-            <center>
-				<h3 >Countdown Timer With Progress Bar</h3>
-				<label>Enter A Number In The Countdown Timer (Minutes):</label>
-    	        <p id="geri_say_goster" value="0"></p>
-    	        <input type="number" class="geri_say" name="number" value="1" min="1" required>
-	            <button onclick="geri_say()">Calc</button>
-			</center>
-    	</div>
-	</div>
-</div>
-</body>
-<script type="text/javascript">
-	function saniye(veri){
-		g = Math.floor(veri / 86400);
-		s = Math.floor(veri / 3600 % 24);
-		d = Math.floor(veri / 60 % 60);
-		sn = Math.floor(veri % 60);
-		return (`<span style="color:red">${g}</span> Days  <span style="color:red">${s}</span> Hours  <span style="color:red">${d}</span> Minutes  <span style="color:red">${sn}</span> Seconds `);
-	}
+<body>
 
-	function check (dogrula, error){
-		for(i = 0; i< dogrula.length; i++){
-			if (!dogrula[i].checkValidity()){
-				error.push("Error => " + dogrula[i].name + " | Reason => " + dogrula[i].validationMessage+"\r\n");
-			}
-		}
-	}
+<header class="main-header">
+    <h1 class="display-5 fw-bold text-dark">Date Calculation & Countdown Tools</h1>
+</header>
 
-	function kac_gun(){
-		var error = [];
-		let dogrula = document.getElementsByClassName('kac_gun');
-		check (dogrula,error);
-		if (error.length !== 0) {
-			alert(error);
-		} else {
-			let tarih = []
-			for (index=0; index < dogrula.length; index++){
-				tarih.push(dogrula[index].value);
-			}
-			let yaz = "";
-			for (i in tarih) {yaz += (`${tarih[i]} `)};
-			let kgt   = Math.floor(new Date(yaz).getTime() / 1000);
-			let suan = Math.floor(new Date().getTime() / 1000);		
-			if (kgt > suan){
-				let sonuc = (kgt - suan);
-				document.getElementById("kac_gun_sonuc").innerHTML = (`<strong>${saniye(sonuc)} Left.</strong>`);
-				}else {
-					let sonuc = (suan - kgt);
-					document.getElementById("kac_gun_sonuc").innerHTML = (`<strong>${saniye(sonuc)} Passed.</strong>`);
-				}
-		}
-	}
+<main class="container">
+    <div class="row g-4">
+        
+        <!-- TOOL 1: Time Left / After Calculator -->
+        <section class="col-lg-4 col-md-6">
+            <div class="card tool-card border-primary border-4">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="h5 mb-0">Time Left / After</h3>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-3 text-start">
+                        <label class="form-label">Year:</label>
+                        <input type="number" id="year" class="form-control" value="2023" min="1970" max="2038">
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label class="form-label">Month:</label>
+                        <input type="number" id="month" class="form-control" value="10" min="1" max="12">
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label class="form-label">Day:</label>
+                        <input type="number" id="day" class="form-control" value="8" min="1" max="31">
+                    </div>
+                    <button class="btn btn-primary w-100" onclick="calculateTimeDiff()">Calculate</button>
+                    <div id="diff_sonuc" class="result-area"></div>
+                </div>
+            </div>
+        </section>
 
-	function gun_say (){
-		var error = [];
-		let dogrula = document.getElementsByClassName('gun_say');
-		check(dogrula,error);
-		if (error.length !== 0) {
-			alert(error);
-		} else{
-			let days = dogrula[0].value;
-    		let hsp = new Date().getTime() + (days * 86400000);
-			let zmn = new Date(hsp);
-			let sec = document.getElementById("gun_say_sonuc");
-			if (days === "0"){ sec.innerHTML = `<strong>Please enter a number other than zero (<span style="color:red">${days}</span>)<strong>`;
-			}else{
-				sec.innerHTML = (`<span style="color:red; font-weight: bold;">${zmn.getDate()}/${zmn.getMonth()+1}/${zmn.getFullYear()}</span>`)
-			}
-		}
-	}
+        <!-- TOOL 2: Enter Number And Calculate Date -->
+        <section class="col-lg-4 col-md-6">
+            <div class="card tool-card border-success border-4">
+                <div class="card-header bg-success text-white text-center">
+                    <h3 class="h5 mb-0">Date Offset Calculator</h3>
+                </div>
+                <div class="card-body text-center">
+                    <p class="small text-muted">Enter a number of days to add or subtract from today.</p>
+                    <div class="mb-3">
+                        <input type="number" id="days_input" class="form-control text-center" value="1">
+                    </div>
+                    <button class="btn btn-success w-100" onclick="calculateDateOffset()">Calculate Date</button>
+                    <div id="offset_sonuc" class="result-area"></div>
+                </div>
+            </div>
+        </section>
 
-	function geri_say(){
-		var error = [];
-		let dogrula = document.getElementsByClassName('geri_say');
-		check (dogrula,error);
-		if (error.length !== 0) {
-				alert(error);
-			} else{
-				if (typeof sayac === 'number'){ 
-					clearInterval(sayac);
-					sayac = undefined;
-				console.log("Timer Cleared");
-				}
-				let sayi = dogrula[0].value *60;
-				let pBar = sayi;
-				sayac =setInterval(()=>{
-					if (sayi > 0){
-						sayi -= 1
-						document.getElementById('geri_say_goster').innerHTML = `<strong>${saniye(sayi)}</strong><br><progress value="${sayi}" max="${pBar}"></progress>`;
-						}else{
-							clearInterval(sayac);
-							document.getElementById('geri_say_goster').innerHTML = '<strong><span style="color:red">The Time Is Over</span></strong><br><progress value="${sayi}" max="${pBar}"></progress>'
-							console.log("Time Ended: ", sayi);
-							}
-				},1000);
-				console.log("Timer Is Started.")
-			}
-	}
+        <!-- TOOL 3: Countdown Timer -->
+        <section class="col-lg-4 col-md-12">
+            <div class="card tool-card border-warning border-4">
+                <div class="card-header bg-warning text-dark text-center">
+                    <h3 class="h5 mb-0">Countdown Timer</h3>
+                </div>
+                <div class="card-body text-center">
+                    <p class="small text-muted">Enter duration in minutes.</p>
+                    <div class="mb-3">
+                        <input type="number" id="countdown_mins" class="form-control text-center" value="1" min="1">
+                    </div>
+                    <button class="btn btn-warning w-100" onclick="startCountdown()">Start Timer</button>
+                    <div id="countdown_display" class="result-area">
+                        <p class="text-muted m-0">Waiting...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<script>
+    // Global variable for timer management
+    let timerInterval = null;
+
+    /**
+     * Yardımcı: Zamanı formatlar (Gün, Saat, Dakika, Saniye)
+     */
+    function formatTime(seconds) {
+        const d = Math.floor(seconds / (3600 * 24));
+        const h = Math.floor((seconds % (3600 * 24)) / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = Math.floor(seconds % 60);
+
+        return `<span class="time-highlight">${d}</span> Days 
+                <span class="time-highlight">${h}</span> Hours 
+                <span class="time-highlight">${m}</span> Mins 
+                <span class="time-highlight">${s}</span> Secs`;
+    }
+
+    /**
+     * TOOL 1: Farkı hesapla
+     */
+    function calculateTimeDiff() {
+        const year = parseInt(document.getElementById('year').value);
+        const month = parseInt(document.getElementById('month').value) - 1; // JS aylar 0-11 arası
+        const day = parseInt(document.getElementById('day').value);
+        const display = document.getElementById('diff_sonuc');
+
+        if (isNaN(year) || isNaN(month+1) || isNaN(day)) {
+            display.innerHTML = `<span class="error-text">Please enter valid numbers!</span>`;
+            return;
+        }
+
+        const targetDate = new Date(year, month, day);
+        const now = new Date();
+        let diffMs = targetDate - now;
+        let isPassed = false;
+
+        if (diffMs < 0) {
+            diffMs = Math.abs(diffMs);
+            isPassed = true;
+        }
+
+        const diffSec = Math.floor(diffMs / 1000);
+        const label = isPassed ? "Passed" : "Left";
+        
+        display.innerHTML = `<strong>${formatTime(diffSec)} ${label}</strong>`;
+    }
+
+    /**
+     * TOOL 2: Gün ekle/çıkar
+     */
+    function calculateDateOffset() {
+        const days = parseInt(document.getElementById('days_input').value);
+        const display = document.getElementById('offset_sonuc');
+
+        if (days === 0) {
+            display.innerHTML = `<span class="error-text">Enter a non-zero number.</span>`;
+            return;
+        }
+
+        const targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + days);
+
+        const formattedDate = targetDate.toLocaleDateString('tr-TR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+
+        display.innerHTML = `<span class="text-success fw-bold">${formattedDate}</span>`;
+    }
+
+    /**
+     * TOOL 3: Geri sayım
+     */
+    function startCountdown() {
+        const minutes = parseInt(document.getElementById('countdown_mins').value);
+        const display = document.getElementById('countdown_display');
+
+        if (isNaN(minutes) || minutes <= 0) {
+            display.innerHTML = `<span class="error-text">Enter valid minutes!</span>`;
+            return;
+        }
+
+        // Eğer çalışan bir timer varsa temizle
+        if (timerInterval) {
+            clearInterval(timerInterval);
+        }
+
+        let totalSeconds = minutes * 60;
+        const maxSeconds = totalSeconds;
+
+        timerInterval = setInterval(() => {
+            if (totalSeconds > 0) {
+                totalSeconds--;
+                
+                display.innerHTML = `
+                    <strong>${formatTime(totalSeconds)}</strong>
+                    <progress value="${totalSeconds}" max="${maxSeconds}"></progress>
+                `;
+            } else {
+                clearInterval(timerInterval);
+                display.innerHTML = `<span class="error-text">The Time Is Over!</span><br><progress value="0" max="${maxSeconds}"></progress>`;
+            }
+        }, 1000);
+    }
 </script>
+
+</body>
 </html>
